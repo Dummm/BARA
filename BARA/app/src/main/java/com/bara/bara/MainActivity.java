@@ -3,6 +3,7 @@ package com.bara.bara;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FaceArFragment arFragment;
     private ModelRenderable faceRegionsRenderable;
-    private Texture faceMeshTexture;
+//    private Texture faceMeshTexture;
     private final HashMap<AugmentedFace, AugmentedFaceNode> faceNodeMap = new HashMap<>();
 
     @Override
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
 
         ModelRenderable.builder()
-                .setSource(this, R.raw.hors)
+                .setSource(this, Uri.parse("hors.sfb"))
                 .build()
                 .thenAccept(
                         modelRenderable -> {
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         scene.addOnUpdateListener(
             (FrameTime frameTime) -> {
-                if (faceRegionsRenderable == null || faceMeshTexture == null) {
+                if (faceRegionsRenderable == null) {// || faceMeshTexture == null) {
                     return;
                 }
 
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                         AugmentedFaceNode faceNode = new AugmentedFaceNode(face);
                         faceNode.setParent(scene);
                         faceNode.setFaceRegionsRenderable(faceRegionsRenderable);
-                        faceNode.setFaceMeshTexture(faceMeshTexture);
+//                        faceNode.setFaceMeshTexture(faceMeshTexture);
                         faceNodeMap.put(face, faceNode);
                     }
                 }
