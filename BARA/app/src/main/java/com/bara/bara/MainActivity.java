@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
 
         ModelRenderable.builder()
-                .setSource(this, Uri.parse("hors.sfb"))
+                .setSource(this, R.raw.hors)
                 .build()
                 .thenAccept(
                         modelRenderable -> {
