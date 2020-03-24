@@ -1,18 +1,23 @@
 {
   animations: [
     {
+      clips: [
+        {
+          name: '11065_horsehead_v3|11065_horsehead_v3Action',
+        },
+      ],
       path: 'sampledata/models/hors.fbx',
     },
   ],
   materials: [
     {
-      name: 'balaklava',
+      name: '_11065_horsehead_v3_11065_horsehead_v3_olddefault',
       parameters: [
         {
           baseColor: [
-            1,
-            1,
-            1,
+            0.80000000000000004,
+            0.80000000000000004,
+            0.80000000000000004,
             1,
           ],
         },
@@ -55,7 +60,7 @@
     collision: {},
     file: 'sampledata/models/hors.fbx',
     name: 'hors',
-    recenter: 'root',
+    recenter: false,
   },
   version: '0.54:2',
 }
