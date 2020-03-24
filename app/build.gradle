@@ -60,3 +60,19 @@ sceneform.asset('sampledata/models/hors.fbx', // 'Source Asset Path' specified d
         'default',                            // 'Material Path' specified during import.
         'sampledata/models/hors.sfa',         // '.sfa Output Path' specified during import.
         'src/main/res/raw/hors')              // '.sfb Output Path' specified during import.
+sceneform.asset('sampledata/models/feis.fbx', // 'Source Asset Path' specified during import.
+        'default',                            // 'Material Path' specified during import.
+        'sampledata/models/feis.sfa',         // '.sfa Output Path' specified during import.
+        'src/main/res/raw/feis')              // '.sfb Output Path' specified during import.
+sceneform.asset('sampledata/models/noz.fbx', // 'Source Asset Path' specified during import.
+        'default',                            // 'Material Path' specified during import.
+        'sampledata/models/noz.sfa',         // '.sfa Output Path' specified during import.
+        'src/main/res/raw/noz')              // '.sfb Output Path' specified during import.
+sceneform.asset('sampledata/models/sunglasses.fbx', // 'Source Asset Path' specified during import.
+        'default',                            // 'Material Path' specified during import.
+        'sampledata/models/sunglasses.sfa',         // '.sfa Output Path' specified during import.
+        'src/main/res/raw/sunglasses')              // '.sfb Output Path' specified during import.
+sceneform.asset('sampledata/models/cat.fbx', // 'Source Asset Path' specified during import.
+        'default',                            // 'Material Path' specified during import.
+        'sampledata/models/cat.sfa',         // '.sfa Output Path' specified during import.
+        'src/main/res/raw/cat')              // '.sfb Output Path' specified during import.
