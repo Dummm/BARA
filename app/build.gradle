@@ -26,6 +26,9 @@ android {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
     }
+    dataBinding {
+        enabled = true
+    }
 
 }
 
@@ -76,3 +79,7 @@ sceneform.asset('sampledata/models/cat.fbx', // 'Source Asset Path' specified du
         'default',                            // 'Material Path' specified during import.
         'sampledata/models/cat.sfa',         // '.sfa Output Path' specified during import.
         'src/main/res/raw/cat')              // '.sfb Output Path' specified during import.
+sceneform.asset('sampledata/models/glasses.fbx', // 'Source Asset Path' specified during import.
+        'default',                            // 'Material Path' specified during import.
+        'sampledata/models/glasses.sfa',         // '.sfa Output Path' specified during import.
+        'src/main/res/raw/glasses')              // '.sfb Output Path' specified during import.
