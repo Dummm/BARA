@@ -59,8 +59,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
+        buildModel(R.raw.cat);
+//        buildModel(R.raw.feis);
         buildModel(R.raw.hors);
         buildModel(R.raw.glasses);
+        buildModel(R.raw.sunglasses);
 
         final ArSceneView sceneView = arFragment.getArSceneView();
         sceneView.setCameraStreamRenderPriority(Renderable.RENDER_PRIORITY_FIRST);
