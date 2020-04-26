@@ -5,7 +5,6 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -15,10 +14,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
-import com.bara.bara.dummy.DummyContent;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.AugmentedFace;
 import com.google.ar.core.TrackingState;
@@ -29,11 +25,9 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -150,7 +144,7 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
         return true;
     }
 
-    public void onListFragmentInteraction(DummyContent.FilterSelectorItem item)
+    public void onListFragmentInteraction(CameraFilterProvider.FilterSelectorItem item)
     {
         changeModel = !changeModel;
         int modelChosen = getModelId(item.name);
@@ -196,29 +190,19 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
             @Override
             public void onPixelCopyFinished(int copyResult) {
                     if (copyResult == PixelCopy.SUCCESS) {
+                        String path;
                         try {
-                            arFragment.saveBitmapToDisk(bitmap, filename);
+                            path = arFragment.saveBitmapToDisk(bitmap, filename);
                         } catch (IOException e) {
                             Toast toast = Toast.makeText(MainActivity.this, e.toString(),
                                     Toast.LENGTH_LONG);
                             toast.show();
                             return;
                         }
-                        Snackbar snackbar = Snackbar.make(findViewById(android.R.id.content),
-                                "Photo saved", Snackbar.LENGTH_LONG);
-                        snackbar.setAction("Open in Photos", v -> {
-                            File photoFile = new File(filename);
 
-                            Uri photoURI = FileProvider.getUriForFile(MainActivity.this,
-                                    MainActivity.this.getPackageName() + ".fileprovider",
-                                    photoFile);
-                            Intent intent = new Intent(Intent.ACTION_VIEW, photoURI);
-                            intent.setDataAndType(photoURI, "image/*");
-                            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            startActivity(intent);
-
-                        });
-                        snackbar.show();
+                        Intent intent = new Intent(getApplicationContext(), ImageViewer.class);
+                        intent.putExtra("filepath", path);
+                        startActivity(intent);
                     } else {
                         Toast toast = Toast.makeText(MainActivity.this,
                                 "Failed to copyPixels: " + copyResult, Toast.LENGTH_LONG);
@@ -228,5 +212,4 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
             }
         }, new Handler(handlerThread.getLooper()));
     }
-
 }

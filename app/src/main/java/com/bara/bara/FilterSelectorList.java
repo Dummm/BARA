@@ -10,10 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bara.bara.dummy.DummyContent;
-
-import java.util.List;
+import androidx.recyclerview.widget.SnapHelper;
 
 /**
  * A fragment representing a list of Items.
@@ -64,17 +61,18 @@ public class FilterSelectorList extends Fragment {
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
+            SnapHelper snapHelper = new StartSnapHelper();
+            snapHelper.attachToRecyclerView(recyclerView);
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new FilterSelectorListAdapter(DummyContent.ITEMS, mListener));
+            recyclerView.setAdapter(new FilterSelectorListAdapter(CameraFilterProvider.ITEMS, mListener));
         }
         return view;
     }
-
-
+    
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -97,13 +95,8 @@ public class FilterSelectorList extends Fragment {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     * <p/>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnListFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onListFragmentInteraction(DummyContent.FilterSelectorItem item);
+        void onListFragmentInteraction(CameraFilterProvider.FilterSelectorItem item);
     }
 }
