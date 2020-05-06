@@ -3,8 +3,13 @@ package com.bara.bara;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
+import android.view.PixelCopy;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -20,6 +25,7 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -27,13 +33,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements FilterSelectorList.OnListFragmentInteractionListener {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final double MIN_OPENGL_VERSION = 3.0;
 
     private List<ModelRenderable> models = new ArrayList<>();
+    private HashMap<Integer, Integer> indexes = new HashMap<>();
     private boolean changeModel = false;
-    private int modelIndex = 0;
 
     private ModelRenderable faceRegionsRenderable;
     private final HashMap<AugmentedFace, AugmentedFaceNode> faceNodeMap = new HashMap<>();
@@ -47,18 +53,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_main);
+        ImageButton btn = findViewById(R.id.switchCamera);
+        btn.setOnClickListener(v ->takePhoto());
 
-        ImageButton btn = findViewById(R.id.button_next);
-        btn.setOnClickListener(v -> {
-            changeModel = !changeModel;
-            modelIndex++;
-            if (modelIndex > models.size() - 1) {
-                modelIndex = 0;
-            }
-            faceRegionsRenderable = models.get(modelIndex);
-        });
-
-        FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
+                FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
         buildModel(R.raw.cat);
 //        buildModel(R.raw.feis);
         buildModel(R.raw.hors);
@@ -116,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 .build()
                 .thenAccept(
                         modelRenderable -> {
+                            indexes.put(modelId, models.size());
                             models.add(modelRenderable);
                             faceRegionsRenderable = modelRenderable;
                             modelRenderable.setShadowCaster(false);
@@ -143,7 +142,74 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
 
+    public void onListFragmentInteraction(CameraFilterProvider.FilterSelectorItem item)
+    {
+        changeModel = !changeModel;
+        int modelChosen = getModelId(item.name);
 
+        faceRegionsRenderable = models.get(modelChosen);
+    }
+
+    private int getModelId(String name)
+    {
+        switch (name)
+        {
+            case "cat":
+                return indexes.get(R.raw.cat);
+
+            case "horse":
+                return indexes.get(R.raw.hors);
+
+            case "glasses":
+                return indexes.get(R.raw.sunglasses);
+
+            case "sunglasses":
+                return indexes.get(R.raw.glasses);
+
+            default:
+                return indexes.get(R.raw.hors);
+        }
+    }
+
+    private void takePhoto() {
+        FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
+        final String filename = arFragment.generateFilename();
+        ArSceneView view = arFragment.getArSceneView();
+
+        // Create a bitmap the size of the scene view.
+        final Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        // Create a handler thread to offload the processing of the image.
+        final HandlerThread handlerThread = new HandlerThread("PixelCopier");
+        handlerThread.start();
+        // Make the request to copy.
+        PixelCopy.request(view, bitmap, new PixelCopy.OnPixelCopyFinishedListener() {
+            @Override
+            public void onPixelCopyFinished(int copyResult) {
+                    if (copyResult == PixelCopy.SUCCESS) {
+                        String path;
+                        try {
+                            path = arFragment.saveBitmapToDisk(bitmap, filename);
+                        } catch (IOException e) {
+                            Toast toast = Toast.makeText(MainActivity.this, e.toString(),
+                                    Toast.LENGTH_LONG);
+                            toast.show();
+                            return;
+                        }
+
+                        Intent intent = new Intent(getApplicationContext(), ImageViewer.class);
+                        intent.putExtra("filepath", path);
+                        startActivity(intent);
+                    } else {
+                        Toast toast = Toast.makeText(MainActivity.this,
+                                "Failed to copyPixels: " + copyResult, Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                    handlerThread.quitSafely();
+            }
+        }, new Handler(handlerThread.getLooper()));
     }
 }

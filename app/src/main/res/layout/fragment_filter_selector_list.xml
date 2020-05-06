@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:maxWidth="100dp"
+    android:adjustViewBounds="false">
+
+    <ImageButton
+        android:background="@drawable/selectable_button_bg"
+        android:id="@+id/imageName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:scaleType="fitCenter"
+        />
+</LinearLayout>
