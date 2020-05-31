@@ -10,6 +10,8 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.view.PixelCopy;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -41,12 +44,17 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
     private HashMap<Integer, Integer> indexes = new HashMap<>();
     private boolean changeModel = false;
 
+
+
     private ModelRenderable faceRegionsRenderable;
     private final HashMap<AugmentedFace, AugmentedFaceNode> faceNodeMap = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
 
         if (!checkIsSupportedDeviceOrFinish(this)) {
             return;
@@ -55,6 +63,15 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
         setContentView(R.layout.activity_main);
         ImageButton btn = findViewById(R.id.switchCamera);
         btn.setOnClickListener(v ->takePhoto());
+
+        Button mLogout = findViewById(R.id.logout);
+
+        mLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LogOut();
+            }
+        });
 
                 FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
         buildModel(R.raw.cat);
@@ -80,6 +97,8 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
                     // Remove any AugmentedFaceNodes associated with an AugmentedFace that stopped tracking.
                     removeAugumentedFaceNodes();
                 });
+
+
     }
 
     private void removeAugumentedFaceNodes() {
@@ -212,4 +231,13 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
             }
         }, new Handler(handlerThread.getLooper()));
     }
+
+    private void LogOut() {
+        FirebaseAuth.getInstance().signOut();
+        Intent intent = new Intent(getApplication(), SplashScreenActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        return;
+    }
+
 }
