@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
     private HashMap<Integer, Integer> indexes = new HashMap<>();
     private boolean changeModel = false;
 
+    private Button GoToPosts;
 
 
     private ModelRenderable faceRegionsRenderable;
@@ -53,7 +54,13 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        GoToPosts = findViewById(R.id.go_to_posts);
+        GoToPosts.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openFeed();
+            }
+        });
 
 
         if (!checkIsSupportedDeviceOrFinish(this)) {
@@ -64,14 +71,9 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
         ImageButton btn = findViewById(R.id.switchCamera);
         btn.setOnClickListener(v ->takePhoto());
 
-        Button mLogout = findViewById(R.id.logout);
 
-        mLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                LogOut();
-            }
-        });
+
+
 
                 FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
         buildModel(R.raw.cat);
@@ -232,12 +234,9 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
         }, new Handler(handlerThread.getLooper()));
     }
 
-    private void LogOut() {
-        FirebaseAuth.getInstance().signOut();
-        Intent intent = new Intent(getApplication(), SplashScreenActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    public void openFeed()
+    {
+        Intent intent = new Intent(this, Feed.class);
         startActivity(intent);
-        return;
     }
-
 }
