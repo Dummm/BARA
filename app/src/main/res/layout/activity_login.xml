@@ -4,35 +4,45 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient"
+    android:foregroundTint="#FFFCFC"
     android:gravity="center"
-    tools:context=".LoginActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="0dp"
+    tools:context=".LoginActivity">
 
     <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
-        android:gravity="center_horizontal"
-        android:layout_gravity="center"
-        android:textStyle="bold"
         android:layout_height="56dp"
-        android:hint="EMAIL" />
+        android:layout_gravity="center"
+        android:background="#1d1d1d"
+        android:paddingTop="15dp"
+        android:gravity="center_horizontal"
+        android:hint="EMAIL"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
 
     <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:textStyle="bold"
         android:id="@+id/password"
-        android:layout_marginTop="20dp"
-        android:hint="PASSWORD"/>
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginTop="10dp"
+        android:gravity="center_horizontal"
+        android:background="#1d1d1d"
+        android:paddingTop="15dp"
+        android:hint="PASSWORD"
+        android:inputType="textPassword"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/login"
         android:layout_width="match_parent"
-        android:layout_height="67dp"
-        android:textStyle="bold"
-        android:layout_marginTop="20dp"
-        android:text="LOGIN" />
+        android:layout_height="56dp"
+        android:layout_marginTop="10dp"
+        android:background="#1d1d1d"
+        android:textColor="#FFFFFF"
+        android:text="LOGIN"
+        android:textStyle="bold" />
 
 </LinearLayout>

@@ -4,32 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient"
     tools:context=".Feed">
 
-    <Button
+    <ImageButton
         android:id="@+id/go_to_create_post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:background="@drawable/ic_post"
         android:text="@string/create_post"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="16dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         />
-    <Button
+    <ImageButton
         android:id="@+id/logout_feed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:background="@drawable/ic_exit"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:text="@string/logout"
         android:layout_toRightOf="@+id/go_to_create_post"
-        android:layout_marginLeft="16dp"
         />
-    <Button
+    <ImageButton
         android:id="@+id/go_to_camera"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:background="@drawable/ic_camera"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
         android:text="Camera"
         android:layout_toLeftOf="@+id/go_to_create_post"
-        android:layout_marginLeft="16dp"
         />
 
     <ProgressBar
@@ -37,6 +45,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:theme="@style/ProgressAccent"
         />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"

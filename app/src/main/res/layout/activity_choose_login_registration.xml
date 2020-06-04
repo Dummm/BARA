@@ -4,26 +4,28 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="bottom"
-    android:background="@drawable/gradient"
-    android:gravity="bottom"
+    android:layout_gravity="center_vertical"
+    android:gravity="center_vertical"
     android:orientation="vertical"
     tools:context=".ChooseLoginRegistrationActivity">
 
     <Button
         android:id="@+id/login"
         android:layout_width="match_parent"
-        android:layout_height="67dp"
-        android:layout_gravity="center"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        android:background="#1d1d1d"
+        android:textColor="#FFFFFF"
         android:textStyle="bold"
         android:text="LOGIN" />
 
     <Button
         android:id="@+id/registration"
         android:layout_width="match_parent"
-        android:layout_height="67dp"
-        android:layout_gravity="center"
+        android:layout_height="56dp"
+        android:layout_marginTop="20dp"
+        android:background="#1d1d1d"
+        android:textColor="#FFFFFF"
         android:textStyle="bold"
-        android:backgroundTintMode="src_in"
         android:text="REGISTRATION" />
 </LinearLayout>

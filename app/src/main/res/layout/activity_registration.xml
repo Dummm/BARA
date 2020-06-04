@@ -4,14 +4,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient"
     android:gravity="center"
     tools:context=".RegistrationActivity"
     android:orientation="vertical">
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:background="#1d1d1d"
+        android:paddingTop="16dp"
+        android:textColor="#FFFFFF"
         android:gravity="center_horizontal"
         android:textStyle="bold"
         android:id="@+id/name"
@@ -19,26 +22,36 @@
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:textStyle="bold"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:background="#1d1d1d"
+        android:paddingTop="16dp"
+        android:textColor="#FFFFFF"
+        android:gravity="center_horizontal"
         android:id="@+id/email"
         android:hint="EMAIL"/>
 
     <EditText
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:textStyle="bold"
-        android:layout_marginTop="20dp"
+        android:layout_height="55dp"
+        android:layout_gravity="center"
+        android:background="#1d1d1d"
+        android:layout_marginTop="10dp"
+        android:paddingTop="16dp"
+        android:textColor="#FFFFFF"
+        android:gravity="center_horizontal"
         android:id="@+id/password"
         android:hint="PASSWORD"/>
+
     <Button
         android:layout_width="match_parent"
-
-        android:layout_height="67dp"
-        android:layout_marginTop="20dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="10dp"
+        android:background="#1d1d1d"
+        android:textColor="#FFFFFF"
         android:textStyle="bold"
         android:text="REGISTRATION"
         android:id="@+id/registration"/>

@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button goToPosts = findViewById(R.id.go_to_posts);
+        ImageButton goToPosts = findViewById(R.id.go_to_posts);
         goToPosts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,11 +68,7 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
         ImageButton btn = findViewById(R.id.switchCamera);
         btn.setOnClickListener(v ->takePhoto());
 
-
-
-
-
-                FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
+        FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
         buildModel(R.raw.cat);
 //        buildModel(R.raw.feis);
         buildModel(R.raw.hors);

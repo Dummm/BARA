@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -25,9 +26,9 @@ import java.util.List;
 
 public class Feed extends AppCompatActivity {
 
-    private Button mGoToCreatePost;
-    private Button mGoToCamera;
-    private Button mLogout;
+    private ImageButton mGoToCreatePost;
+    private ImageButton mGoToCamera;
+    private ImageButton mLogout;
 
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
