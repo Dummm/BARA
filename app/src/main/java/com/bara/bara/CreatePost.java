@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Button;
@@ -132,8 +133,9 @@ public class CreatePost extends AppCompatActivity {
                             },500);
                             Toast.makeText(CreatePost.this, "Upload successful", Toast.LENGTH_SHORT).show();
                             Upload upload = new Upload(mEditTextMessage.getText().toString().trim(),
-                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().toString());
-                                    //seprecated taskSnapshot.getDownloadUrl().toString()
+                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().getResult().toString());
+//                                    Log.i(MainActivity.class.getSimpleName(), "asdf: " + taskSnapshot.getMetadata().getReference().getDownloadUrl().onSuccessTask());
+                            //seprecated taskSnapshot.getDownloadUrl().toString()
                             String uploadId = mDatabaseRef.push().getKey();
                             mDatabaseRef.child(uploadId).setValue(upload);
                         }
