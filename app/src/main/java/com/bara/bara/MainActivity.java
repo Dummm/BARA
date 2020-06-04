@@ -26,7 +26,6 @@ import com.google.ar.sceneform.Scene;
 import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.AugmentedFaceNode;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -44,8 +43,6 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
     private HashMap<Integer, Integer> indexes = new HashMap<>();
     private boolean changeModel = false;
 
-    private Button GoToPosts;
-
 
     private ModelRenderable faceRegionsRenderable;
     private final HashMap<AugmentedFace, AugmentedFaceNode> faceNodeMap = new HashMap<>();
@@ -53,9 +50,10 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-        GoToPosts = findViewById(R.id.go_to_posts);
-        GoToPosts.setOnClickListener(new View.OnClickListener() {
+        Button goToPosts = findViewById(R.id.go_to_posts);
+        goToPosts.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openFeed();
@@ -67,7 +65,6 @@ public class MainActivity extends AppCompatActivity implements FilterSelectorLis
             return;
         }
 
-        setContentView(R.layout.activity_main);
         ImageButton btn = findViewById(R.id.switchCamera);
         btn.setOnClickListener(v ->takePhoto());
 
