@@ -1,6 +1,7 @@
 package com.bara.bara.feed;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,7 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
         holder.textViewMessage.setText(uploadCurrent.getMessage());
+        Log.i(MainActivity.class.getSimpleName(), "asdf: " + uploadCurrent.getImageUrl());
         holder.textViewUser.setText(uploadCurrent.getEmail());
         Picasso.get()
                 .load(uploadCurrent.getImageUrl())
