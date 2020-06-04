@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_material_light"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
@@ -15,6 +16,7 @@
         android:id="@+id/imageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
+        android:layout_gravity="left"
         android:layout_marginTop="10dp"
         android:layout_marginRight="10dp"
         android:background="@drawable/more_options_button_image"
@@ -47,5 +49,12 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_gravity="bottom|center_horizontal"/>
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/go_to_posts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Go To Posts" />
 </FrameLayout>

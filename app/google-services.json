@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "651778473937",
+    "firebase_url": "https://bara-78688.firebaseio.com",
+    "project_id": "bara-78688",
+    "storage_bucket": "bara-78688.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651778473937:android:2e2a00eebea30a5e096af0",
+        "android_client_info": {
+          "package_name": "com.bara.bara"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "651778473937-hodt6687hc2p4280oit7c8keffsovk0u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bara.bara",
+            "certificate_hash": "c9bf079edd8a5542ee203aaa3e8f1ef774337570"
+          }
+        },
+        {
+          "client_id": "651778473937-bntfimlbfj9tqro6jn2j01onpt1ipgl0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnHJ1lzri5ibun7bIpw5MRmFwN9HXHdmM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "651778473937-bntfimlbfj9tqro6jn2j01onpt1ipgl0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
