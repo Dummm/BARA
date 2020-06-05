@@ -37,7 +37,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
         holder.textViewMessage.setText(uploadCurrent.getMessage());
-        Log.i(MainActivity.class.getSimpleName(), "asdf: " + uploadCurrent.getImageUrl());
+        Log.i(MainActivity.class.getSimpleName(), "asdf: " + uploadCurrent.getEmail());
+//        Log.i(MainActivity.class.getSimpleName(), "asdf: " + uploadCurrent.getImageUrl());
         holder.textViewUser.setText(uploadCurrent.getEmail());
         Picasso.get()// deprecated with(mContext)
                 .load(uploadCurrent.getImageUrl())

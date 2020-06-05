@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -132,12 +134,25 @@ public class CreatePost extends AppCompatActivity {
                                 }
                             },500);
                             Toast.makeText(CreatePost.this, "Upload successful", Toast.LENGTH_SHORT).show();
-                            Upload upload = new Upload(mEditTextMessage.getText().toString().trim(),
-                                    taskSnapshot.getMetadata().getReference().getDownloadUrl().getResult().toString());
-//                                    Log.i(MainActivity.class.getSimpleName(), "asdf: " + taskSnapshot.getMetadata().getReference().getDownloadUrl().onSuccessTask());
-                            //seprecated taskSnapshot.getDownloadUrl().toString()
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
+                            Uri imageUri;
+                            taskSnapshot.getMetadata()
+                                .getReference()
+                                .getDownloadUrl()
+                                .addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                    @Override
+                                    public void onSuccess(Uri uri) {
+                                        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+                                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                                        String mail = currentUser.getEmail();
+                                        Upload upload = new Upload(
+                                                mEditTextMessage.getText().toString().trim(),
+                                                uri.toString(),
+                                                mail);
+                                        Log.i(MainActivity.class.getSimpleName(), "asdf: " + uri.toString());
+                                        String uploadId = mDatabaseRef.push().getKey();
+                                        mDatabaseRef.child(uploadId).setValue(upload);
+
+                                }});
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
