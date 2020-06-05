@@ -12,14 +12,11 @@ public class Upload {
 
     public Upload(){/*empty constructor necessary*/}
 
-    public Upload(String message, String imageUrl)
+    public Upload(String message, String imageUrl, String email)
     {
         mMessage = message;
         mImageUrl = imageUrl;
-
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        mEmail = currentUser.getEmail();
+        mEmail = email;
     }
 
     public String getMessage()
@@ -45,6 +42,11 @@ public class Upload {
     public String getEmail()
     {
         return mEmail;
+    }
+
+    public void setEmail(String email)
+    {
+        mEmail = email;
     }
 
 }
