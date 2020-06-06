@@ -9,5 +9,5 @@
     android:layout_marginLeft="5dp"
     android:layout_marginRight="5dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".FilterSelectorList"
+    tools:context=".filter.FilterSelectorList"
     tools:listitem="@layout/fragment_filter_selector_list" />
