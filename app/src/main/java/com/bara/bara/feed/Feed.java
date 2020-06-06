@@ -3,7 +3,7 @@ package com.bara.bara.feed;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -38,9 +38,9 @@ public class Feed extends AppCompatActivity {
 
         Slidr.attach(this);
 
-        final Button goToCameraButton = findViewById(R.id.go_to_camera);
-        final Button goToCreatePostButton = findViewById(R.id.go_to_create_post);
-        final Button logoutButton = findViewById(R.id.logout_feed);
+        final ImageButton goToCameraButton = findViewById(R.id.go_to_camera);
+        final ImageButton goToCreatePostButton = findViewById(R.id.go_to_create_post);
+        final ImageButton logoutButton = findViewById(R.id.logout_feed);
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

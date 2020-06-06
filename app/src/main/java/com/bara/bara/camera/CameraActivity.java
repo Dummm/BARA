@@ -10,7 +10,6 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.view.PixelCopy;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -56,7 +55,7 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button goToPosts = findViewById(R.id.go_to_posts);
+        ImageButton goToPosts = findViewById(R.id.go_to_posts);
         goToPosts.setOnClickListener(v -> openFeed());
 
         if (!checkIsSupportedDeviceOrFinish(this)) {
