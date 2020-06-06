@@ -4,11 +4,11 @@
     android:layout_height="match_parent"
     android:background="@color/background_material_light"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivity">
+    tools:context=".camera.CameraActivity">
 
     <fragment
         android:id="@+id/face_fragment"
-        android:name="com.bara.bara.FaceArFragment"
+        android:name="com.bara.bara.camera.FaceArFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -68,7 +68,7 @@
 
         <fragment
             android:id="@+id/filter_selector_fragment"
-            android:name="com.bara.bara.FilterSelectorList"
+            android:name="com.bara.bara.filter.FilterSelectorList"
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_gravity="bottom|center_horizontal"/>
