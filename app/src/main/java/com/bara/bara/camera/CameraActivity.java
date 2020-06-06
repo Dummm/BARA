@@ -1,4 +1,4 @@
-package com.bara.bara.camera;
+package com.bara.bara;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 import android.view.PixelCopy;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -68,7 +69,11 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
         FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.face_fragment);
 
+
+
+                FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
         buildModel(R.raw.cat);
+//        buildModel(R.raw.feis);
         buildModel(R.raw.hors);
         buildModel(R.raw.glasses);
         buildModel(R.raw.sunglasses);

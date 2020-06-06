@@ -1,4 +1,4 @@
-package com.bara.bara.feed;
+package com.bara.bara;
 
 import android.content.Context;
 import android.util.Log;
