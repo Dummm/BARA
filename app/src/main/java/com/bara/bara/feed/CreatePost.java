@@ -58,7 +58,7 @@ public class CreatePost extends AppCompatActivity {
         mImageView = findViewById(R.id.image_view);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("posts");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("posts");
+            mDatabaseRef = FirebaseDatabase.getInstance().getReference("posts");
 
         mButtonChooseImage.setOnClickListener(v -> openFileChooser());
 

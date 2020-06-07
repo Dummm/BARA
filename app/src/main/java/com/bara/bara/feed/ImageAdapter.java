@@ -1,6 +1,7 @@
-package com.bara.bara;
+package com.bara.bara.feed;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bara.bara.R;
+import com.bara.bara.camera.CameraActivity;
+import com.bara.bara.profile.ProfileActivity;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -39,6 +42,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         holder.textViewMessage.setText(uploadCurrent.getMessage());
         Log.i(MainActivity.class.getSimpleName(), "asdf: " + uploadCurrent.getImageUrl());
         holder.textViewUser.setText(uploadCurrent.getEmail());
+        //Create activity to selected user profile.
+        holder.textViewUser.setOnClickListener(v -> {
+            final Intent intent = new Intent(mContext, ProfileActivity.class);
+            intent.putExtra("POST_EMAIL",uploadCurrent.getEmail());
+            v.getContext().startActivity(intent);
+        });
         Picasso.get()
                 .load(uploadCurrent.getImageUrl())
                 .placeholder(R.mipmap.ic_launcher)
@@ -46,6 +55,11 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
                 .centerCrop()
                 .into(holder.imageView);
     }
+    public void goToProfile() {
+        final Intent intent = new Intent(mContext, ProfileActivity.class);
+        mContext.startActivity(intent);
+    }
+
 
     @Override
     public int getItemCount() {

@@ -81,7 +81,7 @@ public class Feed extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void goToCamera() {
+    public void goToCamera() {
         final Intent intent = new Intent(this, CameraActivity.class);
         startActivity(intent);
     }
