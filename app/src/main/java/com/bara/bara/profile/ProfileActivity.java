@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bara.bara.R;
@@ -29,13 +30,61 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
         DatabaseReference dbReference;
         dbReference = FirebaseDatabase.getInstance().getReference().child("follower");
-        final TextView UserNameTextHolder = (TextView)findViewById(R.id.User_Name);
+        final TextView NameTextHolder = (TextView)findViewById(R.id.name);
         final Button FollowButton =(Button)findViewById(R.id.btnFollow);
         Bundle extras= getIntent().getExtras();
-        String UserName=extras.getString("POST_EMAIL");
-        UserNameTextHolder.setText(UserName);
+        String mail = extras.getString("POST_EMAIL");
+        ((TextView) findViewById(R.id.email)).setText(mail);
+
+        FirebaseDatabase.getInstance()
+            .getReference("users")
+            .orderByChild("email")
+            .equalTo(mail)
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot usernameSnapshot : dataSnapshot.getChildren()) {
+//                        Log.i(ImageAdapter.class.getSimpleName(), "asdf:" + usernameSnapshot.getValue(UserData.class)));
+                        String username = usernameSnapshot.getValue(UserData.class).getName();
+                        NameTextHolder.setText(username);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    NameTextHolder.setText("-");
+                }
+            });
+
         final FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final FirebaseUser currentUser = mAuth.getCurrentUser();
+
+
+        dbReference
+            .orderByChild("follower")
+            .addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    long follows = 0;
+                    long followers = 0;
+
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        if (snapshot.child("follower").getValue(String.class).equals(mail)) {
+                            follows++;
+                        } else if (snapshot.child("following").getValue(String.class).equals(mail)) {
+                            followers++;
+                        }
+                    }
+
+                    ((TextView) findViewById(R.id.tv1)).setText("" + followers);
+                    ((TextView) findViewById(R.id.tv2)).setText("" + follows);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    throw databaseError.toException();
+                }
+            });
 
         //TODO THIS IS BAD NEEDS REFACTORING
         // Check if user is on his own profile
@@ -47,9 +96,8 @@ public class ProfileActivity extends AppCompatActivity {
                 if(dataSnapshot.exists()) {
                     //Followed Profile
                     for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        if (snapshot.child("following").getValue(String.class).equals(UserName))
+                        if (snapshot.child("following").getValue(String.class).equals(mail))
                         {
-                            Toast.makeText(getApplicationContext(), "asdf " + dataSnapshot.getChildren().toString(), Toast.LENGTH_LONG).show();
                             FollowButton.setText("Unfollow");
                             FollowButton.setBackgroundColor(Color.RED);
                             FollowButton.setOnClickListener(v-> dataSnapshot.getRef().removeValue());
@@ -63,7 +111,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
         //Own Profile
-         if(currentUser.getEmail().equals(UserName)) {
+         if(currentUser.getEmail().equals(mail)) {
             FollowButton.setText("Own Profile");
             FollowButton.setEnabled(false);
         }
@@ -74,7 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
             FollowButton.setOnClickListener(v->{
                 final String key = requireNonNull(dbReference.push().getKey(),
                         "Database reference key is null.");
-                dbReference.child(key).setValue(new Follower(currentUser.getEmail(),UserName));
+                dbReference.child(key).setValue(new Follower(currentUser.getEmail(),mail));
             });
         }
     }
