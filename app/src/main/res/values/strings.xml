@@ -24,9 +24,11 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
     <string name="choose_file">Choose File</string>
-    <string name="message">Message</string>
+    <string name="message">TITLE</string>
     <string name="upload">UPLOAD</string>
-    <string name="logout">Logout</string>
-    <string name="create_post">Create Post</string>
+    <string name="logout">LOGOUT</string>
+    <string name="create_post">CREATE POST</string>
     <string name="register_error_toast">Registration ERROR</string>
+    <string name="camera">CAMERA</string>
+    <string name="placeholder">placeholder</string>
 </resources>

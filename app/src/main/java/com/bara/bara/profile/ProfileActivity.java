@@ -99,7 +99,7 @@ public class ProfileActivity extends AppCompatActivity {
                         if (snapshot.child("following").getValue(String.class).equals(mail))
                         {
                             FollowButton.setText("Unfollow");
-                            FollowButton.setBackgroundColor(Color.RED);
+                            FollowButton.setBackgroundColor(Color.parseColor("#EF0909"));
                             FollowButton.setOnClickListener(v-> dataSnapshot.getRef().removeValue());
                         }
                     }
@@ -118,7 +118,7 @@ public class ProfileActivity extends AppCompatActivity {
         // Profile
         else {
             FollowButton.setText("Follow User");
-            FollowButton.setBackgroundColor(Color.GREEN);
+            FollowButton.setBackgroundColor(Color.parseColor("#FF9800"));
             FollowButton.setOnClickListener(v->{
                 final String key = requireNonNull(dbReference.push().getKey(),
                         "Database reference key is null.");

@@ -78,8 +78,8 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
         Picasso.get()
                 .load(uploadCurrent.getImageUrl())
                 .placeholder(R.mipmap.ic_launcher)
-                .fit()
-                .centerCrop()
+//                .fit()
+//                .centerCrop()
                 .into(holder.imageView);
     }
     public void goToProfile() {

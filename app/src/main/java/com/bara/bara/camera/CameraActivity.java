@@ -56,7 +56,7 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button goToPosts = findViewById(R.id.go_to_posts);
+        ImageButton goToPosts = findViewById(R.id.go_to_posts);
         goToPosts.setOnClickListener(v -> openFeed());
 
         if (!checkIsSupportedDeviceOrFinish(this)) {

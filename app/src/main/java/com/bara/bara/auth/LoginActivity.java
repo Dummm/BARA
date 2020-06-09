@@ -39,7 +39,13 @@ public class LoginActivity extends AppCompatActivity {
         final Button mLogin = findViewById(R.id.login);
         final EditText mEmail = findViewById(R.id.email);
         final EditText mPassword = findViewById(R.id.password);
+        final Button mRegistration = findViewById(R.id.registration);
 
+        mRegistration.setOnClickListener(v ->
+                startActivity(
+                        new Intent(getApplication(), RegisterActivity.class)
+                )
+        );
         mLogin.setOnClickListener(view -> {
             final String email = mEmail.getText().toString();
             final String password = mPassword.getText().toString();
