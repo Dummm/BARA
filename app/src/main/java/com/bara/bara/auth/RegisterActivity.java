@@ -61,6 +61,8 @@ public class RegisterActivity extends AppCompatActivity {
                                     R.string.register_error_toast, Toast.LENGTH_SHORT).show();
                         } else {
                             final String userId = requireNonNull(mAuth.getCurrentUser()).getUid();
+                            final DatabaseReference databaseRef = FirebaseDatabase.getInstance()
+                                    .getReference("posts");
                             final DatabaseReference currentUserDb = FirebaseDatabase.getInstance()
                                     .getReference().child("users").child(userId);
 
