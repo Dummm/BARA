@@ -1,4 +1,4 @@
-package com.bara.bara;
+package com.bara.bara.camera;
 
 import android.app.Activity;
 import android.app.ActivityManager;
@@ -56,7 +56,7 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ImageButton goToPosts = findViewById(R.id.go_to_posts);
+        Button goToPosts = findViewById(R.id.go_to_posts);
         goToPosts.setOnClickListener(v -> openFeed());
 
         if (!checkIsSupportedDeviceOrFinish(this)) {
@@ -69,11 +69,7 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
         FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.face_fragment);
 
-
-
-                FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager().findFragmentById(R.id.face_fragment);
         buildModel(R.raw.cat);
-//        buildModel(R.raw.feis);
         buildModel(R.raw.hors);
         buildModel(R.raw.glasses);
         buildModel(R.raw.sunglasses);
