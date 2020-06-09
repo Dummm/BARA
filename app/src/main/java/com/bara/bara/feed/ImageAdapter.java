@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bara.bara.R;
 import com.bara.bara.camera.CameraActivity;
 import com.bara.bara.profile.ProfileActivity;
+import com.bara.bara.profile.UserData;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -40,7 +47,28 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHol
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         Upload uploadCurrent = mUploads.get(position);
         holder.textViewMessage.setText(uploadCurrent.getMessage());
-        holder.textViewUser.setText(uploadCurrent.getEmail());
+
+        FirebaseDatabase.getInstance()
+            .getReference("users")
+                .orderByChild("email")
+                .equalTo(uploadCurrent.getEmail())
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot usernameSnapshot : dataSnapshot.getChildren()) {
+//                        Log.i(ImageAdapter.class.getSimpleName(), "asdf:" + usernameSnapshot.getValue(UserData.class)));
+                        String username = usernameSnapshot.getValue(UserData.class).getName();
+                        holder.textViewUser.setText(username);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+                    holder.textViewUser.setText("-");
+                }
+            });
+
         //Create activity to selected user profile.
         holder.textViewUser.setOnClickListener(v -> {
             final Intent intent = new Intent(mContext, ProfileActivity.class);
