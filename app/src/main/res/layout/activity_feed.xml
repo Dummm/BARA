@@ -1,34 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient"
-    tools:context=".feed.Feed">
+    tools:context="feed.Feed">
 
     <Button
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:id="@+id/go_to_create_post"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/create_post"
+        android:layout_height="60dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginLeft="16dp" />
-
-    <Button
-        android:id="@+id/logout_feed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/logout"
-        android:layout_toRightOf="@+id/go_to_create_post"
-        android:layout_marginLeft="16dp"
+        android:text="@string/create_post"
+        android:textSize="17dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:drawableTop="@drawable/ic_post"
+        android:drawableTint="@color/colorAccent"
+        android:backgroundTint="#0F00"
         />
     <Button
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:id="@+id/logout_feed"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toEndOf="@+id/go_to_create_post"
+        android:text="@string/logout"
+        android:textSize="17dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:drawableTop="@drawable/ic_exit"
+        android:drawableTint="@color/colorAccent"
+        android:backgroundTint="#0F00"
+        />
+    <Button
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:id="@+id/go_to_camera"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Camera"
-        android:layout_toLeftOf="@+id/go_to_create_post"
-        android:layout_marginLeft="16dp"
+        android:layout_height="60dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toStartOf="@+id/go_to_create_post"
+        android:text="@string/camera"
+        android:textSize="17dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorAccent"
+        android:drawableTop="@drawable/ic_camera"
+        android:drawableTint="@color/colorAccent"
+        android:backgroundTint="#0F00"
         />
 
     <ProgressBar
@@ -36,13 +63,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:theme="@style/ProgressAccent"
         />
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/go_to_create_post"
-        android:layout_marginTop="16dp"
+        android:background="#2d2d2d"
         />
 
 </RelativeLayout>

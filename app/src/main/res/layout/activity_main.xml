@@ -17,16 +17,33 @@
         android:layout_height="120dp"
         android:background="@drawable/circular_shadow"
         android:backgroundTint="#000000" />
-
     <ImageButton
         android:id="@+id/imageView"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:background="@drawable/more_options_button_image"
+        android:background="@drawable/ic_more"
         android:backgroundTint="#FFFFFF"
         android:visibility="visible" />
+
+
+    <View
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_gravity="right"
+        android:background="@drawable/circular_shadow_right"
+        android:backgroundTint="#000000" />
+    <ImageButton
+        android:id="@+id/go_to_posts"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="right"
+        android:background="@drawable/ic_dashboard"
+        android:backgroundTint="@color/colorAccent"
+        android:text="Go To Posts" />
 
     <Button
         android:id="@+id/swipe"
@@ -57,10 +74,4 @@
             android:layout_gravity="bottom|center_horizontal"/>
 
     </LinearLayout>
-
-    <Button
-        android:id="@+id/go_to_posts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Go To Posts" />
 </FrameLayout>

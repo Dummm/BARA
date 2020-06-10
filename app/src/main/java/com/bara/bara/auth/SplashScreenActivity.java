@@ -23,7 +23,7 @@ public class SplashScreenActivity extends AppCompatActivity {
     }
 
     private void goToAuthActivity() {
-        Intent intent = new Intent(getApplication(), ChooseLoginRegistrationActivity.class);
+        Intent intent = new Intent(getApplication(), LoginActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
         finish();

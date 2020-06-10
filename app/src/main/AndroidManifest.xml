@@ -25,10 +25,8 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".feed.CreatePost"></activity>
         <activity android:name=".feed.Feed" />
+        <activity android:name=".profile.ProfileActivity" />
         <activity android:name=".auth.LoginActivity" />
-        <activity
-            android:name=".ui.login.LoginActivity"
-            android:label="@string/title_activity_login" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -47,7 +45,6 @@
         <activity android:name=".auth.SplashScreenActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

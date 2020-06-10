@@ -6,8 +6,7 @@ public class Upload {
     private String mImageUrl;
 
 
-    public Upload() {
-    }
+    public Upload() {}
 
     public Upload(String message, String imageUrl, String email) {
         mMessage = message;
