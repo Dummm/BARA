@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -31,14 +30,17 @@ public class Feed extends AppCompatActivity {
 
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
+    private boolean showOnlyFollowedPosts;
+    private List<Upload> uploads;
+    private boolean follows;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feed);
-
+        follows = false;
         Slidr.attach(this);
-
+        showOnlyFollowedPosts = true;
         final Button goToCameraButton = findViewById(R.id.go_to_camera);
         final Button goToCreatePostButton = findViewById(R.id.go_to_create_post);
         final Button logoutButton = findViewById(R.id.logout_feed);
@@ -46,21 +48,40 @@ public class Feed extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         final ProgressBar progressCircle = findViewById(R.id.progress_circle);
-        final List<Upload> uploads = new ArrayList<>();
+        uploads = new ArrayList<>();
+        updateFeed(progressCircle);
 
+        final Button allPostsButton = findViewById(R.id.all_posts);
+        allPostsButton.setOnClickListener(v -> {
+            showOnlyFollowedPosts = false;
+            updateFeed(progressCircle);
+        });
+        final Button filteredPostsButton = findViewById(R.id.followed_posts);
+        filteredPostsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOnlyFollowedPosts = true;
+                updateFeed(progressCircle);
+            }
+        });
+
+
+        logoutButton.setOnClickListener(view -> logOut());
+        goToCameraButton.setOnClickListener(v -> goToCamera());
+        goToCreatePostButton.setOnClickListener(v -> goToCreatePost());
+    }
+
+    private void updateFeed(ProgressBar progressCircle) {
         final DatabaseReference databaseRef = FirebaseDatabase.getInstance()
                 .getReference("posts");
         databaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Upload upload = postSnapshot.getValue(Upload.class);
-                    uploads.add(upload);
-                    progressCircle.setVisibility(View.INVISIBLE);
+                if (showOnlyFollowedPosts) {
+                    populateFeedWithFilteredPosts(dataSnapshot, progressCircle);
+                } else {
+                    populateFeedWithAllPosts(dataSnapshot, progressCircle);
                 }
-
-                mAdapter = new ImageAdapter(Feed.this, uploads);
-                mRecyclerView.setAdapter(mAdapter);
             }
 
             @Override
@@ -69,11 +90,53 @@ public class Feed extends AppCompatActivity {
                 progressCircle.setVisibility(View.INVISIBLE);
             }
         });
-
-        logoutButton.setOnClickListener(view -> logOut());
-        goToCameraButton.setOnClickListener(v -> goToCamera());
-        goToCreatePostButton.setOnClickListener(v -> goToCreatePost());
     }
+
+    private void populateFeedWithFilteredPosts(@NonNull DataSnapshot dataSnapshot, ProgressBar progressCircle) {
+        this.uploads = new ArrayList<>();
+
+        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+            Upload upload = postSnapshot.getValue(Upload.class);
+            checkForFollowedUsers(upload);
+
+            progressCircle.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void checkForFollowedUsers(Upload upload) {
+        FirebaseDatabase.getInstance().getReference().child("follower")
+                .orderByChild("follower").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                            if (postSnapshot.child("following").getValue(String.class).equals(upload.getUser().getUuid())) {
+                                uploads.add(upload);
+                            }
+                        }
+                        mAdapter = new ImageAdapter(Feed.this, uploads);
+                        mRecyclerView.setAdapter(mAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        throw databaseError.toException();
+                    }
+                });
+    }
+
+    private void populateFeedWithAllPosts(@NonNull DataSnapshot dataSnapshot, ProgressBar progressCircle) {
+        this.uploads = new ArrayList<>();
+        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+            Upload upload = postSnapshot.getValue(Upload.class);
+            uploads.add(upload);
+            progressCircle.setVisibility(View.INVISIBLE);
+        }
+
+        mAdapter = new ImageAdapter(Feed.this, uploads);
+        mRecyclerView.setAdapter(mAdapter);
+    }
+
 
     private void logOut() {
         FirebaseAuth.getInstance().signOut();
