@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bara.bara.R;
 import com.bara.bara.camera.CameraActivity;
+import com.bara.bara.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -61,22 +62,23 @@ public class RegisterActivity extends AppCompatActivity {
                                     R.string.register_error_toast, Toast.LENGTH_SHORT).show();
                         } else {
                             final String userId = requireNonNull(mAuth.getCurrentUser()).getUid();
-                            final DatabaseReference databaseRef = FirebaseDatabase.getInstance()
-                                    .getReference("posts");
+
+                            User newUser = new User(userId, name, email);
                             final DatabaseReference currentUserDb = FirebaseDatabase.getInstance()
                                     .getReference().child("users").child(userId);
 
-                            updateUserInfo(currentUserDb, email, name);
+                            updateUserInfo(currentUserDb, newUser);
                         }
                     });
         });
 
     }
 
-    private void updateUserInfo(DatabaseReference currentUserDb, String email, String name) {
+    private void updateUserInfo(DatabaseReference currentUserDb, User user) {
         final Map<String, Object> userInfo = new HashMap<>();
-        userInfo.put("email", email);
-        userInfo.put("name", name);
+        userInfo.put("email", user.getEmail());
+        userInfo.put("name", user.getName());
+        userInfo.put("uuid", user.getUuid());
         currentUserDb.updateChildren(userInfo);
     }
 

@@ -5,126 +5,167 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bara.bara.R;
+import com.bara.bara.model.User;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.r0adkll.slidr.Slidr;
 
-import static java.util.Objects.requireNonNull;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
+    private Button followButton;
+    private String currentUserUUID;
+    private String profileUserUUID;
+    private DatabaseReference dbReference;
+    private TextView followersTextView;
+    private TextView followingsTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        DatabaseReference dbReference;
         dbReference = FirebaseDatabase.getInstance().getReference().child("follower");
-        final TextView NameTextHolder = (TextView)findViewById(R.id.name);
-        final Button FollowButton =(Button)findViewById(R.id.btnFollow);
-        Bundle extras= getIntent().getExtras();
-        String mail = extras.getString("POST_EMAIL");
-        ((TextView) findViewById(R.id.email)).setText(mail);
+        final TextView nameTextView = (TextView) findViewById(R.id.name);
+        followButton = (Button) findViewById(R.id.btnFollow);
+        final Bundle extras = getIntent().getExtras();
+        profileUserUUID = extras.getString("USER_ID");
+        followersTextView = findViewById(R.id.tv1);
+        followingsTextView = findViewById(R.id.tv2);
+        currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
-        FirebaseDatabase.getInstance()
-            .getReference("users")
-            .orderByChild("email")
-            .equalTo(mail)
-            .addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot usernameSnapshot : dataSnapshot.getChildren()) {
-//                        Log.i(ImageAdapter.class.getSimpleName(), "asdf:" + usernameSnapshot.getValue(UserData.class)));
-                        String username = usernameSnapshot.getValue(UserData.class).getName();
-                        NameTextHolder.setText(username);
+        getUsernameForProfile(nameTextView);
+
+        checkForAutoFollow();
+
+        followButton.setOnClickListener(v -> createFollowerEntry(dbReference, profileUserUUID));
+
+        toggleFollowing();
+
+        updateFollowersNumber();
+    }
+
+    private void updateFollowersNumber() {
+        dbReference.orderByChild("follower")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        computeNumberOfFollowersAndFollowings(dataSnapshot);
                     }
 
-                }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        throw databaseError.toException();
+                    }
+                });
+    }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    NameTextHolder.setText("-");
-                }
-            });
-
-        final FirebaseAuth mAuth = FirebaseAuth.getInstance();
-        final FirebaseUser currentUser = mAuth.getCurrentUser();
-
-
-        dbReference
-            .orderByChild("follower")
-            .addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    long follows = 0;
-                    long followers = 0;
-
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        if (snapshot.child("follower").getValue(String.class).equals(mail)) {
-                            follows++;
-                        } else if (snapshot.child("following").getValue(String.class).equals(mail)) {
-                            followers++;
-                        }
+    private void toggleFollowing() {
+        dbReference.orderByChild("following").equalTo(profileUserUUID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        changeFollowButtonStyle(dataSnapshot);
                     }
 
-                    ((TextView) findViewById(R.id.tv1)).setText("" + followers);
-                    ((TextView) findViewById(R.id.tv2)).setText("" + follows);
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    throw databaseError.toException();
-                }
-            });
-
-        //TODO THIS IS BAD NEEDS REFACTORING
-        // Check if user is on his own profile
-        Query query= dbReference.orderByChild("follower").equalTo(currentUser.getEmail());
-        query.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-            //Check the relation between the user and the profile selected {Own Profile, Followed Profile, Profile}
-                if(dataSnapshot.exists()) {
-                    //Followed Profile
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        if (snapshot.child("following").getValue(String.class).equals(mail))
-                        {
-                            FollowButton.setText("Unfollow");
-                            FollowButton.setBackgroundColor(Color.parseColor("#EF0909"));
-                            FollowButton.setOnClickListener(v-> dataSnapshot.getRef().removeValue());
-                        }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        throw databaseError.toException();
                     }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                throw databaseError.toException();
-            }
-        });
-        //Own Profile
-         if(currentUser.getEmail().equals(mail)) {
-            FollowButton.setText("Own Profile");
-            FollowButton.setEnabled(false);
-        }
-        // Profile
-        else {
-            FollowButton.setText("Follow User");
-            FollowButton.setBackgroundColor(Color.parseColor("#FF9800"));
-            FollowButton.setOnClickListener(v->{
-                final String key = requireNonNull(dbReference.push().getKey(),
-                        "Database reference key is null.");
-                dbReference.child(key).setValue(new Follower(currentUser.getEmail(),mail));
-            });
+                });
+    }
+
+    private void checkForAutoFollow() {
+        if (currentUserUUID.equals(profileUserUUID)) {
+            setAutoFollowButtonStyle();
+        } else {
+            followButton.setText("Follow me");
+            followButton.setBackgroundColor(Color.parseColor("#FF9800"));
         }
     }
+
+    private void getUsernameForProfile(TextView nameTextView) {
+        FirebaseDatabase.getInstance().getReference().child("users").child(profileUserUUID)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        setUsername(dataSnapshot, nameTextView);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        nameTextView.setText('-');
+                    }
+                });
     }
+
+    private void setUsername(@NonNull DataSnapshot dataSnapshot, TextView nameTextView) {
+        String username = dataSnapshot.getValue(User.class).getName();
+        nameTextView.setText(username);
+    }
+
+    private void computeNumberOfFollowersAndFollowings(DataSnapshot dataSnapshot) {
+        int numFollowings = 0;
+        int numFollowers = 0;
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            if (snapshot.child("follower").getValue(String.class).equals(profileUserUUID)) {
+                numFollowings++;
+            } else if (snapshot.child("following").getValue(String.class).equals(profileUserUUID)) {
+                numFollowers++;
+            }
+        }
+
+        followersTextView.setText(String.valueOf(numFollowers));
+        followingsTextView.setText(String.valueOf(numFollowings));
+    }
+
+    private void setAutoFollowButtonStyle() {
+        followButton.setText("Own Profile");
+        followButton.setEnabled(false);
+    }
+
+    private void changeFollowButtonStyle(@NonNull DataSnapshot dataSnapshot) {
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            String currentFollowedUserUUID = snapshot.child("follower").getValue(String.class);
+            if (currentFollowedUserUUID.equals(this.currentUserUUID)) {
+                followButton.setText("Unfollow");
+                followButton.setBackgroundColor(Color.parseColor("#EF0909"));
+                followButton.setOnClickListener(v -> getVoidTask(snapshot));
+            }
+        }
+    }
+
+    @NotNull
+    private Task<Void> getVoidTask(DataSnapshot snapshot) {
+        followButton.setText("Follow me");
+        followButton.setBackgroundColor(Color.parseColor("#FF9800"));
+        followButton.setOnClickListener(v -> createFollowerEntry(dbReference, profileUserUUID));
+        return snapshot.getRef().removeValue();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        followButton.setOnClickListener(null);
+    }
+
+    private void createFollowerEntry(DatabaseReference dbReference, String userId) {
+        DatabaseReference pushedPostRef = dbReference.push();
+        Map<String, Object> followMap = new HashMap<>();
+        followMap.put("follower", FirebaseAuth.getInstance().getCurrentUser().getUid());
+        followMap.put("following", userId);
+        pushedPostRef.updateChildren(followMap);
+    }
+}
 

@@ -2,24 +2,20 @@ package com.bara.bara.feed;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bara.bara.R;
-import com.bara.bara.camera.CameraActivity;
+import com.bara.bara.model.User;
 import com.bara.bara.profile.ProfileActivity;
-import com.bara.bara.profile.UserData;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
@@ -28,69 +24,66 @@ import java.util.List;
 
 public class ImageAdapter extends RecyclerView.Adapter<ImageAdapter.ImageViewHolder> {
 
-    private Context mContext;
-    private List<Upload> mUploads;
+    private Context context;
+    private List<Upload> uploads;
 
     public ImageAdapter(Context context, List<Upload> uploads) {
-        mContext = context;
-        mUploads = uploads;
+        this.context = context;
+        this.uploads = uploads;
     }
 
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(mContext).inflate(R.layout.post, parent, false);
+        View v = LayoutInflater.from(context).inflate(R.layout.post, parent, false);
         return new ImageViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        Upload uploadCurrent = mUploads.get(position);
+        Upload uploadCurrent = uploads.get(position);
         holder.textViewMessage.setText(uploadCurrent.getMessage());
 
         FirebaseDatabase.getInstance()
-            .getReference("users")
+                .getReference("users")
                 .orderByChild("email")
                 .equalTo(uploadCurrent.getEmail())
-            .addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    for (DataSnapshot usernameSnapshot : dataSnapshot.getChildren()) {
-//                        Log.i(ImageAdapter.class.getSimpleName(), "asdf:" + usernameSnapshot.getValue(UserData.class)));
-                        String username = usernameSnapshot.getValue(UserData.class).getName();
-                        holder.textViewUser.setText(username);
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot usernameSnapshot : dataSnapshot.getChildren()) {
+                            String username = usernameSnapshot.getValue(User.class).getName();
+                            holder.textViewUser.setText(username);
+                        }
                     }
 
-                }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        holder.textViewUser.setText("-");
+                    }
+                });
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    holder.textViewUser.setText("-");
-                }
-            });
-
-        //Create activity to selected user profile.
         holder.textViewUser.setOnClickListener(v -> {
-            final Intent intent = new Intent(mContext, ProfileActivity.class);
-            intent.putExtra("POST_EMAIL",uploadCurrent.getEmail());
+            final Intent intent = new Intent(context, ProfileActivity.class);
+            intent.putExtra("POST_EMAIL", uploadCurrent.getUser().getEmail());
+            intent.putExtra("USER_ID", uploadCurrent.getUser().getUuid());
             v.getContext().startActivity(intent);
         });
         Picasso.get()
                 .load(uploadCurrent.getImageUrl())
                 .placeholder(R.mipmap.ic_launcher)
-//                .fit()
-//                .centerCrop()
                 .into(holder.imageView);
     }
+
     public void goToProfile() {
-        final Intent intent = new Intent(mContext, ProfileActivity.class);
-        mContext.startActivity(intent);
+        final Intent intent = new Intent(context, ProfileActivity.class);
+        context.startActivity(intent);
     }
 
 
     @Override
     public int getItemCount() {
-        return mUploads.size();
+        return uploads.size();
     }
 
     public static class ImageViewHolder extends RecyclerView.ViewHolder {
