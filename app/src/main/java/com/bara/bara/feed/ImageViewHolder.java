@@ -1,6 +1,7 @@
 package com.bara.bara.feed;
 
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,7 +21,7 @@ import java.util.Set;
 public class ImageViewHolder extends RecyclerView.ViewHolder {
     public TextView textViewMessage;
     public TextView textViewUser;
-    public TextView numLikesView;
+    public Button numLikesView;
     public ImageView imageView;
     private DatabaseReference dbReference;
     private Post clickedPost;

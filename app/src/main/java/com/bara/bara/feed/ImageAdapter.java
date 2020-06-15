@@ -2,9 +2,12 @@ package com.bara.bara.feed;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -123,7 +126,12 @@ public class ImageAdapter extends RecyclerView.Adapter<ImageViewHolder> {
                         }
                         /// TODO: Aici trebuie inlocuit cu numLikesView ca m-am bagat peste titlul
                         /// TODO: postului si likedByCurrentUser sa fie o iconita ceva ca inimioara de pe insta
-                        holder.textViewMessage.setText(String.valueOf(likeCounter) + likedByCurrentUser);
+                        holder.numLikesView.setText(String.valueOf(likeCounter));
+                        if (likedByCurrentUser) {
+                            holder.numLikesView.setTextColor(Color.parseColor("#FF9800"));
+                            holder.numLikesView.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FF9800")));
+                        }
+
                     }
 
                     @Override
