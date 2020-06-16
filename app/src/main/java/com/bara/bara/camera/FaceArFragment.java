@@ -3,18 +3,24 @@ package com.bara.bara.camera;
 import android.Manifest;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 
 import com.google.ar.core.Config;
 import com.google.ar.core.Config.AugmentedFaceMode;
@@ -61,13 +67,28 @@ public class FaceArFragment extends ArFragment {
     public String[] getAdditionalPermissions() {
         String[] additionalPermissions = super.getAdditionalPermissions();
         int permissionLength = additionalPermissions != null ? additionalPermissions.length : 0;
-        String[] permissions = new String[permissionLength + 1];
-        permissions[0] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        String[] permissions = new String[permissionLength + 2];
+        permissions[0] = Manifest.permission.READ_EXTERNAL_STORAGE;
+        permissions[1] = Manifest.permission.WRITE_EXTERNAL_STORAGE;
         if (permissionLength > 0) {
-            System.arraycopy(additionalPermissions, 0, permissions, 1, additionalPermissions.length);
+            System.arraycopy(additionalPermissions, 0, permissions, 2, additionalPermissions.length);
         }
 
         return permissions;
+    }
+
+    public boolean hasWritePermission() {
+        return ActivityCompat.checkSelfPermission(
+                this.requireActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    /** Launch Application Setting to grant permissions. */
+    public void launchPermissionSettings() {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.setData(Uri.fromParts("package", requireActivity().getPackageName(), null));
+        requireActivity().startActivity(intent);
     }
 
     String generateFilename() {
@@ -113,5 +134,48 @@ public class FaceArFragment extends ArFragment {
         fos.close();
 
         return filePath.toString();
+    }
+    public String saveVideoToDisk(String filename) throws IOException {
+        OutputStream fos;
+        Uri filePath;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, filename);
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, "video/mp4");
+            contentValues.put(MediaStore.MediaColumns.RELATIVE_PATH, "DCIM/" + "Sceneform");
+
+            ContentResolver resolver = getContext().getContentResolver();
+            Uri videoUri = resolver.insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, contentValues);
+            fos = resolver.openOutputStream(videoUri);
+            filePath = videoUri;
+        } else {
+            String storagePath = Environment
+                    .getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM)
+                    .toString();
+            String imagesDir = storagePath + File.separator + "Sceneform";
+
+            File file = new File(imagesDir);
+            if (!file.exists()) {
+                file.mkdir();
+            }
+
+            File image = new File(imagesDir, filename);
+            fos = new FileOutputStream(image);
+            filePath = Uri.fromFile(image);
+        }
+        fos.flush();
+        fos.close();
+
+        return convertMediaUriToPath(filePath);
+    }
+    public String convertMediaUriToPath(Uri uri) {
+        String [] proj={MediaStore.Images.Media.DATA};
+        Cursor cursor = getContext().getContentResolver().query(uri, proj,  null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        String path = cursor.getString(column_index);
+        cursor.close();
+        return path;
     }
 }
