@@ -12,6 +12,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bara.bara.R;
+import com.bara.bara.camera.CameraActivity;
 
 public class ImageViewer extends AppCompatActivity {
 

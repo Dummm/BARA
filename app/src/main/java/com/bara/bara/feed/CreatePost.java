@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bara.bara.R;
+import com.bara.bara.camera.CameraActivity;
 import com.bara.bara.model.Post;
 import com.bara.bara.model.User;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -138,6 +139,9 @@ public class CreatePost extends AppCompatActivity {
             requireNonNull(storageReference, "Null storage reference")
                     .getDownloadUrl()
                     .addOnSuccessListener(saveToDatabase());
+
+            Intent intent = new Intent(getApplicationContext(), Feed.class);
+            startActivity(intent);
         };
     }
 
