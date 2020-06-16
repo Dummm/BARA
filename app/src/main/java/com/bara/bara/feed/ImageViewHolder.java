@@ -1,5 +1,7 @@
 package com.bara.bara.feed;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -13,20 +15,20 @@ import com.bara.bara.helper.DoubleClickListener;
 import com.bara.bara.model.Post;
 import com.bara.bara.model.User;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.Set;
+import com.google.firebase.database.ValueEventListener;
 
 public class ImageViewHolder extends RecyclerView.ViewHolder {
     public TextView textViewMessage;
     public TextView textViewUser;
     public Button numLikesView;
     public ImageView imageView;
-    private DatabaseReference dbReference;
+    private DatabaseReference dbReference = FirebaseDatabase.getInstance().getReference();
     private Post clickedPost;
     private User postAuthor;
-    private Set<String> usersWhoLiked;
 
     public ImageViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -44,27 +46,38 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
 
             @Override
             public void onDoubleClick(View v) {
-
-                DatabaseReference dbReference = FirebaseDatabase.getInstance()
-                        .getReference("posts")
-                        .child(clickedPost.getId())
-                        .child("likes");
+                DatabaseReference likesRef = dbReference.child("likes");
                 final String currentUserId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                if (!usersWhoLiked.contains(currentUserId)) {
-                    final String newLikeId = dbReference.push().getKey();
-                    dbReference.child(newLikeId).setValue(currentUserId);
-                } else {
-                    dbReference.orderByValue().equalTo(currentUserId).getRef().removeValue();
-                }
+                DatabaseReference userLikeRef = likesRef.child(clickedPost.getId()).child(currentUserId);
+                userLikeRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            dataSnapshot.getRef().removeValue();
+                            numLikesView.setText(String.valueOf(Integer.parseInt(numLikesView.getText().toString()) - 1));
+                            numLikesView.setTextColor(Color.parseColor("#FFFFFF"));
 
+                            numLikesView.setCompoundDrawableTintList(null);
+                        } else {
+                            userLikeRef.setValue("");
+                            numLikesView.setText(String.valueOf(Integer.parseInt(numLikesView.getText().toString()) + 1));
+                            numLikesView.setTextColor(Color.parseColor("#FF9800"));
+                            numLikesView.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FF9800")));
+
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
             }
         });
 
+
     }
 
-    public void setUsersWhoLiked(Set<String> usersWhoLiked) {
-        this.usersWhoLiked = usersWhoLiked;
-    }
 
     public void setPost(Post post) {
         this.clickedPost = post;

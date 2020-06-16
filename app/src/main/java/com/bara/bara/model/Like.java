@@ -1,12 +1,25 @@
 package com.bara.bara.model;
 
 public class Like {
+    private String id;
     private String userId;
     private String postId;
 
-    public Like(String userId, String postId) {
+    public Like() {
+    }
+
+    public Like(String id, String userId, String postId) {
+        this.id = id;
         this.userId = userId;
         this.postId = postId;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getUserId() {
