@@ -3,13 +3,20 @@ package com.bara.bara.profile;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bara.bara.R;
+import com.bara.bara.feed.ImageAdapter;
+import com.bara.bara.model.Post;
 import com.bara.bara.model.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,7 +28,9 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -31,6 +40,9 @@ public class ProfileActivity extends AppCompatActivity {
     private DatabaseReference dbReference;
     private TextView followersTextView;
     private TextView followingsTextView;
+    private RecyclerView mRecyclerView;
+    private ImageAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +56,12 @@ public class ProfileActivity extends AppCompatActivity {
         followersTextView = findViewById(R.id.tv1);
         followingsTextView = findViewById(R.id.tv2);
         currentUserUUID = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        final ProgressBar progressCircle = findViewById(R.id.profile_progress_circle);
+
+        updateFeed(progressCircle);
+        mRecyclerView = findViewById(R.id.profile_recycler_view);
+        mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         getUsernameForProfile(nameTextView);
 
@@ -69,6 +87,37 @@ public class ProfileActivity extends AppCompatActivity {
                         throw databaseError.toException();
                     }
                 });
+    }
+
+    private void updateFeed(ProgressBar progressCircle) {
+        final DatabaseReference databaseRef = FirebaseDatabase.getInstance()
+                .getReference("posts");
+        databaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                populateFeedWithAllPosts(dataSnapshot, progressCircle);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Toast.makeText(ProfileActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
+                progressCircle.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    private void populateFeedWithAllPosts(@NonNull DataSnapshot dataSnapshot, ProgressBar progressCircle) {
+        List<Post> posts = new ArrayList<>();
+        for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+            Post post = postSnapshot.getValue(Post.class);
+            if (post.getUser().getUuid().equals(profileUserUUID)) {
+                posts.add(post);
+            }
+            progressCircle.setVisibility(View.INVISIBLE);
+        }
+
+        mAdapter = new ImageAdapter(ProfileActivity.this, posts);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void toggleFollowing() {
