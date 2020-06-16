@@ -56,14 +56,12 @@ public class ImageViewHolder extends RecyclerView.ViewHolder {
                             dataSnapshot.getRef().removeValue();
                             numLikesView.setText(String.valueOf(Integer.parseInt(numLikesView.getText().toString()) - 1));
                             numLikesView.setTextColor(Color.parseColor("#FFFFFF"));
-
                             numLikesView.setCompoundDrawableTintList(null);
                         } else {
                             userLikeRef.setValue("");
                             numLikesView.setText(String.valueOf(Integer.parseInt(numLikesView.getText().toString()) + 1));
                             numLikesView.setTextColor(Color.parseColor("#FF9800"));
                             numLikesView.setCompoundDrawableTintList(ColorStateList.valueOf(Color.parseColor("#FF9800")));
-
                         }
                     }
 
