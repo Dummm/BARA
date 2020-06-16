@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.r0adkll.slidr.Slidr;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Feed extends AppCompatActivity {
@@ -41,7 +42,7 @@ public class Feed extends AppCompatActivity {
         setContentView(R.layout.activity_feed);
         follows = false;
         Slidr.attach(this);
-        showOnlyFollowedPosts = true;
+        showOnlyFollowedPosts = false;
         final Button goToCameraButton = findViewById(R.id.go_to_camera);
         final Button goToCreatePostButton = findViewById(R.id.go_to_create_post);
         final Button logoutButton = findViewById(R.id.logout_feed);
@@ -94,6 +95,10 @@ public class Feed extends AppCompatActivity {
     }
 
     private void populateFeedWithFilteredPosts(@NonNull DataSnapshot dataSnapshot, ProgressBar progressCircle) {
+        findViewById(R.id.all_posts).setVisibility(View.VISIBLE);
+        findViewById(R.id.all_posts).bringToFront();
+        findViewById(R.id.followed_posts).setVisibility(View.GONE);
+
         this.posts = new ArrayList<>();
 
         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
@@ -112,9 +117,11 @@ public class Feed extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                             if (postSnapshot.child("following").getValue(String.class).equals(post.getUser().getUuid())) {
-                                posts.add(post);
+                                posts.add(0, post);
+//                                posts.add(post);
                             }
                         }
+//                        Collections.reverse(posts);
                         mAdapter = new ImageAdapter(Feed.this, posts);
                         mRecyclerView.setAdapter(mAdapter);
                     }
@@ -127,10 +134,15 @@ public class Feed extends AppCompatActivity {
     }
 
     private void populateFeedWithAllPosts(@NonNull DataSnapshot dataSnapshot, ProgressBar progressCircle) {
+        findViewById(R.id.all_posts).setVisibility(View.GONE);
+        findViewById(R.id.followed_posts).setVisibility(View.VISIBLE);
+        findViewById(R.id.followed_posts).bringToFront();
+
         this.posts = new ArrayList<>();
         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
             Post post = postSnapshot.getValue(Post.class);
-            posts.add(post);
+            posts.add(0, post);
+//            posts.add(post);
             progressCircle.setVisibility(View.INVISIBLE);
         }
 

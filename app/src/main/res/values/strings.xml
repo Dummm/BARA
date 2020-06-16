@@ -31,4 +31,6 @@
     <string name="register_error_toast">Registration ERROR</string>
     <string name="camera">CAMERA</string>
     <string name="placeholder">placeholder</string>
+    <string name="all_posts">ALL POSTS</string>
+    <string name="followed">FOLLOWED</string>
 </resources>
