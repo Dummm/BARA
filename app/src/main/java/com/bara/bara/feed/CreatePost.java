@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bara.bara.R;
+import com.bara.bara.model.Post;
 import com.bara.bara.model.User;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -62,7 +63,7 @@ public class CreatePost extends AppCompatActivity {
         mImageView = findViewById(R.id.image_view);
 
         mStorageRef = FirebaseStorage.getInstance().getReference("posts");
-            mDatabaseRef = FirebaseDatabase.getInstance().getReference("posts");
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference("posts");
 
         mButtonChooseImage.setOnClickListener(v -> openFileChooser());
 
@@ -150,11 +151,11 @@ public class CreatePost extends AppCompatActivity {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
-                    final Upload upload = new Upload(mEditTextMessage.getText().toString().trim(), uri.toString(), user, user.getEmail());
-
+                    final Post post = new Post(mEditTextMessage.getText().toString().trim(), uri.toString(), user, user.getEmail());
                     final String uploadId = requireNonNull(mDatabaseRef.push().getKey(),
                             "Database reference key is null.");
-                    mDatabaseRef.child(uploadId).setValue(upload);
+                    post.setId(uploadId);
+                    mDatabaseRef.child(uploadId).setValue(post);
                 }
 
                 @Override

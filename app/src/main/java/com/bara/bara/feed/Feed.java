@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bara.bara.R;
 import com.bara.bara.auth.SplashScreenActivity;
 import com.bara.bara.camera.CameraActivity;
+import com.bara.bara.model.Post;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -31,7 +32,7 @@ public class Feed extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private ImageAdapter mAdapter;
     private boolean showOnlyFollowedPosts;
-    private List<Upload> uploads;
+    private List<Post> posts;
     private boolean follows;
 
     @Override
@@ -48,7 +49,7 @@ public class Feed extends AppCompatActivity {
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         final ProgressBar progressCircle = findViewById(R.id.progress_circle);
-        uploads = new ArrayList<>();
+        posts = new ArrayList<>();
         updateFeed(progressCircle);
 
         final Button allPostsButton = findViewById(R.id.all_posts);
@@ -93,28 +94,28 @@ public class Feed extends AppCompatActivity {
     }
 
     private void populateFeedWithFilteredPosts(@NonNull DataSnapshot dataSnapshot, ProgressBar progressCircle) {
-        this.uploads = new ArrayList<>();
+        this.posts = new ArrayList<>();
 
         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-            Upload upload = postSnapshot.getValue(Upload.class);
-            checkForFollowedUsers(upload);
+            Post post = postSnapshot.getValue(Post.class);
+            checkForFollowedUsers(post);
 
             progressCircle.setVisibility(View.INVISIBLE);
         }
     }
 
-    private void checkForFollowedUsers(Upload upload) {
+    private void checkForFollowedUsers(Post post) {
         FirebaseDatabase.getInstance().getReference().child("follower")
                 .orderByChild("follower").equalTo(FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                            if (postSnapshot.child("following").getValue(String.class).equals(upload.getUser().getUuid())) {
-                                uploads.add(upload);
+                            if (postSnapshot.child("following").getValue(String.class).equals(post.getUser().getUuid())) {
+                                posts.add(post);
                             }
                         }
-                        mAdapter = new ImageAdapter(Feed.this, uploads);
+                        mAdapter = new ImageAdapter(Feed.this, posts);
                         mRecyclerView.setAdapter(mAdapter);
                     }
 
@@ -126,14 +127,14 @@ public class Feed extends AppCompatActivity {
     }
 
     private void populateFeedWithAllPosts(@NonNull DataSnapshot dataSnapshot, ProgressBar progressCircle) {
-        this.uploads = new ArrayList<>();
+        this.posts = new ArrayList<>();
         for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-            Upload upload = postSnapshot.getValue(Upload.class);
-            uploads.add(upload);
+            Post post = postSnapshot.getValue(Post.class);
+            posts.add(post);
             progressCircle.setVisibility(View.INVISIBLE);
         }
 
-        mAdapter = new ImageAdapter(Feed.this, uploads);
+        mAdapter = new ImageAdapter(Feed.this, posts);
         mRecyclerView.setAdapter(mAdapter);
     }
 

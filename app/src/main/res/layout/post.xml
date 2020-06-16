@@ -37,19 +37,41 @@
             android:maxLines="1"
             />
 
-        <TextView
-            android:id="@+id/post_message"
-            android:layout_alignParentBottom="true"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="20dp"
-            android:background="@drawable/title_bg"
-            android:text="@string/placeholder"
-            android:textSize="50sp"
-            android:textColor="#EFFF"
-            android:textStyle="bold"
-            android:ellipsize="end"
-            android:maxLines="1"
-            />
+            android:orientation="horizontal"
+            android:layout_alignParentBottom="true"
+            android:padding="7dp"
+            android:background="@drawable/title_bg">
+
+
+            <Button
+                android:id="@+id/num_likes"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#0F00"
+                android:drawableTop="@drawable/ic_star"
+                android:drawableTint="#BBB"
+                android:text="69"
+                android:textColor="#BBB"
+                android:textSize="17dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/post_message"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#0F00"
+                android:layout_gravity="center"
+                android:text="@string/placeholder"
+                android:textSize="50sp"
+                android:textColor="#EFFF"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:maxLines="1" />
+        </LinearLayout>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>
