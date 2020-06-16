@@ -5,7 +5,9 @@ import android.app.ActivityManager;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.media.CamcorderProfile;
 import android.os.Bundle;
 import android.os.Handler;
@@ -95,7 +97,8 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
         recordButton = findViewById(R.id.record);
         recordButton.setOnClickListener(this::toggleRecording);
         recordButton.setEnabled(true);
-//        recordButton.setImageResource(R.drawable.round_videocam);
+        recordButton.setBackgroundResource(R.drawable.ic_video);
+        recordButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
 
         scene.addOnUpdateListener((FrameTime frameTime) -> applyModel(sceneView, scene));
     }
@@ -269,9 +272,12 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
 
         boolean recording = videoRecorder.onToggleRecord();
         if (recording) {
-//            recordButton.setImageResource(R.drawable.round_stop);
+            recordButton.setBackgroundResource(R.drawable.ic_stop);
+            recordButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF9800")));
+
         } else {
-//            recordButton.setImageResource(R.drawable.round_videocam);
+            recordButton.setBackgroundResource(R.drawable.ic_video);
+            recordButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
             String videoPath = videoRecorder.getVideoPath().getAbsolutePath();
             Toast.makeText(this, "Video saved: " + videoPath, Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Video saved: " + videoPath);

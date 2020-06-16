@@ -57,22 +57,31 @@
         android:layout_gravity="bottom"
         android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/switchCamera"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp"
-            android:background="@drawable/camera_image"
-            android:text="Button" />
-        <ImageButton
-            android:id="@+id/record"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_margin="10dp"
-            android:background="@drawable/horse"
-            android:text="Button" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/switchCamera"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_photo"
+                android:text="Button" />
+
+            <ImageButton
+                android:id="@+id/record"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_video"
+                android:text="Button" />
+        </LinearLayout>
 
         <fragment
             android:id="@+id/filter_selector_fragment"
