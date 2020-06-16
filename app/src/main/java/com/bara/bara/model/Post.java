@@ -1,18 +1,22 @@
-package com.bara.bara.feed;
+package com.bara.bara.model;
 
-import com.bara.bara.model.User;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Upload {
+public class Post {
+    private String id;
     private String message;
     private String email;
     private String imageUrl;
     private User user;
+    private Map<String, String> likes;
 
 
-    public Upload() {
+    public Post() {
     }
 
-    public Upload(String message, String imageUrl, User user, String email) {
+    public Post(String message, String imageUrl, User user, String email) {
+        this.likes = new HashMap<>();
         this.user = user;
         this.message = message;
         this.imageUrl = imageUrl;
@@ -49,5 +53,21 @@ public class Upload {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public Map<String, String> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Map<String, String> likes) {
+        this.likes = likes;
     }
 }

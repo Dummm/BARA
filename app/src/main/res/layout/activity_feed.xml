@@ -69,41 +69,50 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/go_to_create_post"
+        android:layout_above="@id/ll_mda"
         android:background="#2d2d2d" />
 
-    <Button
-        android:id="@+id/all_posts"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_alignEnd="@id/recycler_view"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
-        android:backgroundTint="#0F00"
-        android:drawableTop="@drawable/ic_post"
-        android:drawableTint="@color/colorAccent"
-        android:text="ALL POSTS"
-        android:textColor="@color/colorAccent"
-        android:textSize="17dp"
-        android:textStyle="bold" />
+    <LinearLayout
+        android:id="@+id/ll_mda"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/all_posts"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignEnd="@id/recycler_view"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:backgroundTint="#0F00"
+            android:drawableTop="@drawable/ic_post"
+            android:drawableTint="@color/colorAccent"
+            android:text="ALL POSTS"
+            android:textColor="@color/colorAccent"
+            android:textSize="17dp"
+            android:textStyle="bold" />
 
-    <Button
-        android:id="@+id/followed_posts"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginRight="5dp"
-        android:backgroundTint="#0F00"
-        android:drawableTop="@drawable/ic_post"
-        android:drawableTint="@color/colorAccent"
-        android:text="FOLLOWED"
-        android:textColor="@color/colorAccent"
-        android:textSize="17dp"
-        android:textStyle="bold" />
+        <Button
+            android:id="@+id/followed_posts"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="5dp"
+            android:backgroundTint="#0F00"
+            android:drawableTop="@drawable/ic_post"
+            android:drawableTint="@color/colorAccent"
+            android:text="FOLLOWED"
+            android:textColor="@color/colorAccent"
+            android:textSize="17dp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
 </RelativeLayout>

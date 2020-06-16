@@ -1,4 +1,4 @@
-package com.bara.bara.profile;
+package com.bara.bara.model;
 
 public class Follower {
     String Follower;
