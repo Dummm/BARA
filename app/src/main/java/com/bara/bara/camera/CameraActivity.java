@@ -85,18 +85,19 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
         sceneView.setCameraStreamRenderPriority(Renderable.RENDER_PRIORITY_FIRST);
         final Scene scene = sceneView.getScene();
 
-        scene.addOnUpdateListener((FrameTime frameTime) -> applyModel(sceneView, scene));
 
         // Initialize the VideoRecorder.
         videoRecorder = new VideoRecorder();
         int orientation = getResources().getConfiguration().orientation;
         videoRecorder.setVideoQuality(CamcorderProfile.QUALITY_2160P, orientation);
-        videoRecorder.setSceneView(sceneView);
+        videoRecorder.setSceneView(arFragment.getArSceneView());
 
         recordButton = findViewById(R.id.record);
         recordButton.setOnClickListener(this::toggleRecording);
         recordButton.setEnabled(true);
 //        recordButton.setImageResource(R.drawable.round_videocam);
+
+        scene.addOnUpdateListener((FrameTime frameTime) -> applyModel(sceneView, scene));
     }
 
     private void applyModel(ArSceneView sceneView, Scene scene) {
@@ -266,13 +267,12 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
             return;
         }
 
-        boolean recording = videoRecorder.onToggleRecord(arFragment);
+        boolean recording = videoRecorder.onToggleRecord();
         if (recording) {
 //            recordButton.setImageResource(R.drawable.round_stop);
         } else {
 //            recordButton.setImageResource(R.drawable.round_videocam);
             String videoPath = videoRecorder.getVideoPath().getAbsolutePath();
-
             Toast.makeText(this, "Video saved: " + videoPath, Toast.LENGTH_SHORT).show();
             Log.d(TAG, "Video saved: " + videoPath);
 

@@ -16,15 +16,10 @@
 
 package com.bara.bara.camera;
 
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.res.Configuration;
 import android.media.CamcorderProfile;
-import android.media.FaceDetector;
 import android.media.MediaRecorder;
-import android.net.Uri;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.util.Size;
 import android.view.Surface;
@@ -33,8 +28,6 @@ import com.google.ar.sceneform.SceneView;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Video Recorder class handles recording the contents of a SceneView. It uses MediaRecorder to
@@ -95,22 +88,22 @@ public class VideoRecorder {
    *
    * @return true if recording is now active.
    */
-  public boolean onToggleRecord(FaceArFragment arFragment) {
+  public boolean onToggleRecord() {
     if (recordingVideoFlag) {
       stopRecordingVideo();
     } else {
-      startRecordingVideo(arFragment);
+      startRecordingVideo();
     }
     return recordingVideoFlag;
   }
 
-  private void startRecordingVideo(FaceArFragment arFragment) {
+  private void startRecordingVideo() {
     if (mediaRecorder == null) {
       mediaRecorder = new MediaRecorder();
     }
 
     try {
-      buildFilename(arFragment);
+      buildFilename();
       setUpMediaRecorder();
     } catch (IOException e) {
       Log.e(TAG, "Exception setting up recorder", e);
@@ -128,34 +121,23 @@ public class VideoRecorder {
     recordingVideoFlag = true;
   }
 
-  private void buildFilename(FaceArFragment arFragment) {
-//    if (videoDirectory == null) {
-//      videoDirectory =
-//          new File(
-//              Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-//                  + "/Sceneform");
-//    }
-//    if (videoBaseName == null || videoBaseName.isEmpty()) {
-//      videoBaseName = "Sample";
-//    }
-//    videoPath =
-//        new File(
-//            videoDirectory, videoBaseName + Long.toHexString(System.currentTimeMillis()) + ".mp4");
-//
-//    File dir = videoPath.getParentFile();
-//    if (!dir.exists()) {
-//      dir.mkdirs();
-//    }
-    try {
-      String filename = new SimpleDateFormat(
-                "yyyyMMddHHmmss",
-                java.util.Locale.getDefault())
-                .format(new Date()) + "_video.png";
-      videoPath = new File(arFragment.saveVideoToDisk(filename));
-    } catch (IOException e) {
-      e.printStackTrace();
+  private void buildFilename() {
+    if (videoDirectory == null) {
+      videoDirectory =
+          new File(
+              Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+                  + "/Sceneform");
     }
-
+    if (videoBaseName == null || videoBaseName.isEmpty()) {
+      videoBaseName = "Sample";
+    }
+    videoPath =
+        new File(
+            videoDirectory, videoBaseName + Long.toHexString(System.currentTimeMillis()) + ".mp4");
+    File dir = videoPath.getParentFile();
+    if (!dir.exists()) {
+      dir.mkdirs();
+    }
   }
 
   private void stopRecordingVideo() {
@@ -172,10 +154,6 @@ public class VideoRecorder {
   }
 
   private void setUpMediaRecorder() throws IOException {
-//    File f = new File(videoPath.getAbsolutePath());
-//    if(!f.exists()){
-//      f.createNewFile();
-//    }
 
     mediaRecorder.setVideoSource(MediaRecorder.VideoSource.SURFACE);
 //    mediaRecorder.setVideoSource(MediaRecorder.VideoSource.DEFAULT);
