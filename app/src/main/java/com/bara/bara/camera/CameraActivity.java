@@ -2,14 +2,20 @@ package com.bara.bara.camera;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.media.CamcorderProfile;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.PixelCopy;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -21,6 +27,7 @@ import com.bara.bara.feed.Feed;
 import com.bara.bara.filter.CameraFilterProvider;
 import com.bara.bara.filter.FilterSelectorList;
 import com.bara.bara.photo.ImageViewer;
+import com.bara.bara.camera.VideoRecorder;
 import com.google.ar.core.ArCoreApk;
 import com.google.ar.core.AugmentedFace;
 import com.google.ar.core.TrackingState;
@@ -50,6 +57,8 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
 
     private ModelRenderable faceRegionsRenderable;
     private final HashMap<AugmentedFace, AugmentedFaceNode> faceNodeMap = new HashMap<>();
+    private VideoRecorder videoRecorder;
+    private ImageButton recordButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +86,19 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
         final ArSceneView sceneView = arFragment.getArSceneView();
         sceneView.setCameraStreamRenderPriority(Renderable.RENDER_PRIORITY_FIRST);
         final Scene scene = sceneView.getScene();
+
+
+        // Initialize the VideoRecorder.
+        videoRecorder = new VideoRecorder();
+        int orientation = getResources().getConfiguration().orientation;
+        videoRecorder.setVideoQuality(CamcorderProfile.QUALITY_2160P, orientation);
+        videoRecorder.setSceneView(arFragment.getArSceneView());
+
+        recordButton = findViewById(R.id.record);
+        recordButton.setOnClickListener(this::toggleRecording);
+        recordButton.setEnabled(true);
+        recordButton.setBackgroundResource(R.drawable.ic_video);
+        recordButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
 
         scene.addOnUpdateListener((FrameTime frameTime) -> applyModel(sceneView, scene));
     }
@@ -223,5 +245,49 @@ public class CameraActivity extends AppCompatActivity implements FilterSelectorL
     public void openFeed() {
         Intent intent = new Intent(this, Feed.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onPause() {
+        if (videoRecorder.isRecording()) {
+            toggleRecording(null);
+        }
+        super.onPause();
+    }
+
+    private void toggleRecording(View unusedView) {
+        FaceArFragment arFragment = (FaceArFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.face_fragment);
+
+        if (!arFragment.hasWritePermission()) {
+            Log.e(TAG, "Video recording requires the WRITE_EXTERNAL_STORAGE permission");
+            Toast.makeText(
+                    this,
+                    "Video recording requires the WRITE_EXTERNAL_STORAGE permission",
+                    Toast.LENGTH_LONG)
+                    .show();
+            arFragment.launchPermissionSettings();
+            return;
+        }
+
+        boolean recording = videoRecorder.onToggleRecord();
+        if (recording) {
+            recordButton.setBackgroundResource(R.drawable.ic_stop);
+            recordButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FF9800")));
+
+        } else {
+            recordButton.setBackgroundResource(R.drawable.ic_video);
+            recordButton.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFFFFF")));
+            String videoPath = videoRecorder.getVideoPath().getAbsolutePath();
+            Toast.makeText(this, "Video saved: " + videoPath, Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Video saved: " + videoPath);
+
+            // Send  notification of updated content.
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Video.Media.TITLE, "Sceneform Video");
+            values.put(MediaStore.Video.Media.MIME_TYPE, "video/mp4");
+            values.put(MediaStore.Video.Media.DATA, videoPath);
+            getContentResolver().insert(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, values);
+        }
     }
 }
